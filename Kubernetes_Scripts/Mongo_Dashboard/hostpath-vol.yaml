@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hostpath-ed
+spec:
+  containers:
+  - image: nginx
+    name: test-container
+    volumeMounts:
+    - name: test-vol
+      mountPath: /cache
+  volumes:
+  - name: test-vol
+    hostPath:
+      path: /test-vol

@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-ramped
+  labels:
+    app: my-app-ramped
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+  selector:
+    app: my-app-ramped
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-ramped
+  labels:
+    app: my-app-ramped
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: my-app-ramped
+  template:
+    metadata:
+      labels:
+        app: my-app-ramped
+        version: v1.0.0
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9101"
+    spec:
+      containers:
+      - name: my-app-ramped
+        image: nginx
+        ports:
+        - name: http
+          containerPort: 80
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: VERSION
+          value: v1.0.0

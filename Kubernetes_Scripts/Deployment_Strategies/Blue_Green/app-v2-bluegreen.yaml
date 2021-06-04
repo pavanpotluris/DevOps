@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-v2
+  labels:
+    app: my-app-bluegreen
+    version: v2.0.0
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: my-app-bluegreen
+      version: v2.0.0
+  template:
+    metadata:
+      labels:
+        app: my-app-bluegreen
+        version: v2.0.0
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9101"
+    spec:
+      containers:
+      - name: my-app-bluegreen
+        image: nginx
+        ports:
+        - name: http
+          containerPort: 80
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: VERSION
+          value: v2.0.0
